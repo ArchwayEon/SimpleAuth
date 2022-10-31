@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimpleAuth.Models;
+using SimpleAuth.Models.Entities;
 using SimpleAuth.Services;
 using System.Diagnostics;
 
@@ -11,6 +12,7 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly IUserRepository _userRepo;
+    private Random _random = new Random();
 
     public HomeController(IUserRepository userRepo, ILogger<HomeController> logger)
     {
@@ -45,6 +47,26 @@ public class HomeController : Controller
             }
         }
         return Content("No user");
+    }
+
+    public async Task<IActionResult> CreateTestUser()
+    {
+        var n = _random.Next(100);
+        var check = 
+            await _userRepo.ReadByUsernameAsync($"test{n}@test.com");
+        if(check == null)
+        {
+            var user = new ApplicationUser
+            {
+                Email = $"test{n}@test.com",
+                UserName = $"test{n}@test.com",
+                FirstName = $"User{n}",
+                LastName = $"UserLastname{n}"
+            };
+            await _userRepo.CreateAsync(user, "Pass1!");
+            return Content($"Create test user 'test{n}@test.com'");
+        }
+        return Content("The test user was already created.");
     }
 
     [AllowAnonymous]

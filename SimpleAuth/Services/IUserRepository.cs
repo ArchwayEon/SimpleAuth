@@ -6,4 +6,5 @@ namespace SimpleAuth.Services;
 public interface IUserRepository
 {
     Task<ApplicationUser?> ReadByUsernameAsync(string username);
+    Task<ApplicationUser> CreateAsync(ApplicationUser user, string password);
 }
