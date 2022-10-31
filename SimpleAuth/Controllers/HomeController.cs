@@ -4,6 +4,7 @@ using SimpleAuth.Models;
 using SimpleAuth.Models.Entities;
 using SimpleAuth.Services;
 using System.Diagnostics;
+using System.Text;
 
 namespace SimpleAuth.Controllers;
 
@@ -73,6 +74,33 @@ public class HomeController : Controller
     {
         await _userRepo.AssignUserToRoleAsync("fake@email.com", "TestRole");
         return Content("Assigned fake@email.com to 'TestRole'");
+    }
+
+    public async Task<IActionResult> ShowRoles(string userName)
+    {
+        ApplicationUser? user = await _userRepo.ReadByUsernameAsync(userName);
+        StringBuilder builder = new();
+        foreach(var roleName in user!.Roles)
+        {
+            builder.Append(roleName + " ");
+        }
+        return Content($"UserName: {userName} Roles: {builder}");
+    }
+
+    public async Task<IActionResult> HasRole(string userName, string roleName)
+    {
+        var user = await _userRepo.ReadByUsernameAsync(userName);
+        if(user != null && user.HasRole(roleName))
+        {
+            return Content($"{userName} has role {roleName}");
+        }
+        return Content($"{userName} does not have role {roleName}");
+    }
+
+    [Authorize(Roles ="TestRole")]
+    public IActionResult TestRoleCheck()
+    {
+        return Content("Restricted to role TestRole");
     }
 
     [AllowAnonymous]

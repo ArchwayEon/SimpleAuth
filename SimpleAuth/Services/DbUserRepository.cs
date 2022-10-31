@@ -29,7 +29,10 @@ public class DbUserRepository : IUserRepository
         var user = await ReadByUsernameAsync(userName);
         if(user != null)
         {
-            await _userManager.AddToRoleAsync(user, roleName);
+            if (!user.HasRole(roleName))
+            {
+                await _userManager.AddToRoleAsync(user, roleName);
+            }
         }
     }
 
@@ -42,6 +45,12 @@ public class DbUserRepository : IUserRepository
 
     public async Task<ApplicationUser?> ReadByUsernameAsync(string username)
     {
-        return await _db.Users.FirstOrDefaultAsync(u => u.UserName == username);
+        var user = await _db.Users.FirstOrDefaultAsync(
+            u => u.UserName == username);
+        if(user != null)
+        {
+            user.Roles = await _userManager.GetRolesAsync(user);
+        }
+        return user;
     }
 }
