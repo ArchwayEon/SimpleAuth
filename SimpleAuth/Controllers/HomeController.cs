@@ -69,6 +69,12 @@ public class HomeController : Controller
         return Content("The test user was already created.");
     }
 
+    public async Task<IActionResult> TestAssignUserToRole()
+    {
+        await _userRepo.AssignUserToRoleAsync("fake@email.com", "TestRole");
+        return Content("Assigned fake@email.com to 'TestRole'");
+    }
+
     [AllowAnonymous]
     public IActionResult About()
     {

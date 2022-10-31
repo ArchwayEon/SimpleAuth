@@ -16,6 +16,7 @@ builder.Services
     .AddDefaultIdentity<ApplicationUser>(options => 
         options.SignIn.RequireConfirmedAccount = false)
     .AddUserManager<UserManager<ApplicationUser>>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Add services to the container.
