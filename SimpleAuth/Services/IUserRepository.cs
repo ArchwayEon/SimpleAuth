@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SimpleAuth.Models.Entities;
 
 namespace SimpleAuth.Services;
 
 public interface IUserRepository
 {
-    Task<IdentityUser?> ReadByUsernameAsync(string username);
+    Task<ApplicationUser?> ReadByUsernameAsync(string username);
 }

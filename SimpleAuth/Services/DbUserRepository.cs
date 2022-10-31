@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SimpleAuth.Models.Entities;
 
 namespace SimpleAuth.Services;
 
@@ -11,7 +12,7 @@ public class DbUserRepository : IUserRepository
     {
         _db = db;
     }
-    public async Task<IdentityUser?> ReadByUsernameAsync(string username)
+    public async Task<ApplicationUser?> ReadByUsernameAsync(string username)
     {
         return await _db.Users.FirstOrDefaultAsync(u => u.UserName == username);
     }
